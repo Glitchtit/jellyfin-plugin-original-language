@@ -10,11 +10,15 @@ namespace Jellyfin.Plugin.OriginalLanguage.Tests;
 public class NewItemWatcherTests
 {
     private readonly Mock<IOriginalLanguageService> _service = new();
+    private readonly Mock<ILibraryManager> _libraryManager = new();
     private readonly NewItemWatcher _watcher;
 
     public NewItemWatcherTests()
     {
-        _watcher = new NewItemWatcher(Mock.Of<ILibraryManager>(), _service.Object, NullLogger<NewItemWatcher>.Instance);
+        _watcher = new NewItemWatcher(_libraryManager.Object, _service.Object, NullLogger<NewItemWatcher>.Instance)
+        {
+            ScanPollInterval = TimeSpan.FromMilliseconds(1)
+        };
     }
 
     private static ItemChangeEventArgs Args(BaseItem item, ItemUpdateType reason = ItemUpdateType.None)
@@ -101,5 +105,18 @@ public class NewItemWatcherTests
         await _watcher.HandleItemUpdatedAsync(Args(movie, ItemUpdateType.MetadataDownload));
 
         VerifyApplied(movie, Times.Once());
+    }
+
+    [Fact]
+    public async Task WaitsForLibraryScanToFinish_BeforeApplying()
+    {
+        var series = new Series { Id = Guid.NewGuid() };
+        _libraryManager.SetupSequence(l => l.IsScanRunning).Returns(true).Returns(true).Returns(false);
+
+        _watcher.OnItemAdded(null, Args(series));
+        await _watcher.HandleItemUpdatedAsync(Args(series, ItemUpdateType.MetadataDownload));
+
+        _libraryManager.VerifyGet(l => l.IsScanRunning, Times.Exactly(3));
+        VerifyApplied(series, Times.Once());
     }
 }

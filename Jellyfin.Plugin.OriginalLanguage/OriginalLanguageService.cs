@@ -119,6 +119,7 @@ public class OriginalLanguageService : IOriginalLanguageService
     /// <inheritdoc />
     public async Task<ApplyResult> ApplyAsync(BaseItem item, CancellationToken cancellationToken)
     {
+        item = GetCurrentInstance(item);
         var original = await ResolveOriginalLanguageAsync(item, cancellationToken).ConfigureAwait(false);
         if (string.IsNullOrWhiteSpace(original))
         {
@@ -153,6 +154,7 @@ public class OriginalLanguageService : IOriginalLanguageService
     /// <inheritdoc />
     public async Task<bool> ResetAsync(BaseItem item, CancellationToken cancellationToken)
     {
+        item = GetCurrentInstance(item);
         if (string.IsNullOrEmpty(item.PreferredMetadataLanguage) && string.IsNullOrEmpty(item.PreferredMetadataCountryCode))
         {
             return false;
@@ -176,6 +178,10 @@ public class OriginalLanguageService : IOriginalLanguageService
             IsVirtualItem = false
         });
     }
+
+    // GetItemList returns fresh copies from the database, but the refresh queue works on the
+    // library's cached instance. Edit that one, or the refresh writes the old language back.
+    private BaseItem GetCurrentInstance(BaseItem item) => _libraryManager.GetItemById(item.Id) ?? item;
 
     private async Task SaveAndRefreshAsync(BaseItem item, CancellationToken cancellationToken)
     {

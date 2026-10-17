@@ -190,6 +190,48 @@ public class OriginalLanguageServiceTests
     }
 
     [Fact]
+    public async Task Apply_MutatesAndSavesCachedInstance_NotTheQueriedCopy()
+    {
+        var id = Guid.NewGuid();
+        var queried = new Movie { Id = id, OriginalLanguage = "sv" };
+        var cached = new Movie { Id = id, OriginalLanguage = "sv" };
+        _libraryManager.Setup(l => l.GetItemById(id)).Returns(cached);
+
+        Assert.Equal(ApplyResult.Changed, await _service.ApplyAsync(queried, CancellationToken.None));
+
+        Assert.Equal("sv", cached.PreferredMetadataLanguage);
+        Assert.Equal("SE", cached.PreferredMetadataCountryCode);
+        VerifyChangedOnce(cached);
+    }
+
+    [Fact]
+    public async Task Apply_CachedInstanceAlreadySet_IsAlreadySet()
+    {
+        var id = Guid.NewGuid();
+        var queried = new Movie { Id = id, OriginalLanguage = "sv" };
+        var cached = new Movie { Id = id, OriginalLanguage = "sv", PreferredMetadataLanguage = "sv", PreferredMetadataCountryCode = "SE" };
+        _libraryManager.Setup(l => l.GetItemById(id)).Returns(cached);
+
+        Assert.Equal(ApplyResult.AlreadySet, await _service.ApplyAsync(queried, CancellationToken.None));
+        VerifyUntouched();
+    }
+
+    [Fact]
+    public async Task Reset_ClearsAndSavesCachedInstance()
+    {
+        var id = Guid.NewGuid();
+        var queried = new Movie { Id = id, PreferredMetadataLanguage = "sv", PreferredMetadataCountryCode = "SE" };
+        var cached = new Movie { Id = id, PreferredMetadataLanguage = "sv", PreferredMetadataCountryCode = "SE" };
+        _libraryManager.Setup(l => l.GetItemById(id)).Returns(cached);
+
+        Assert.True(await _service.ResetAsync(queried, CancellationToken.None));
+
+        Assert.Null(cached.PreferredMetadataLanguage);
+        Assert.Null(cached.PreferredMetadataCountryCode);
+        VerifyChangedOnce(cached);
+    }
+
+    [Fact]
     public void GetAllMoviesAndSeries_QueriesNonVirtualMoviesAndSeriesRecursively()
     {
         var items = new List<BaseItem> { new Movie(), new Series() };

@@ -20,16 +20,16 @@ public static class LanguageRules
     /// <summary>
     /// Gets the metadata target for an original language, or null when no enabled rule matches.
     /// </summary>
-    /// <param name="originalLanguage">Original language as two- or three-letter code.</param>
+    /// <param name="originalLanguage">Original language as two- or three-letter code, or its English or native name.</param>
     /// <param name="config">Plugin configuration.</param>
     /// <returns>The target, or null.</returns>
     public static LanguageTarget? GetTarget(string? originalLanguage, PluginConfiguration config)
     {
         switch (originalLanguage?.Trim().ToLowerInvariant())
         {
-            case "sv" or "swe" when config.EnableSwedish:
+            case "sv" or "swe" or "swedish" or "svenska" when config.EnableSwedish:
                 return Swedish;
-            case "fi" or "fin" when config.EnableFinnish:
+            case "fi" or "fin" or "finnish" or "suomi" when config.EnableFinnish:
                 return Finnish;
             default:
                 return null;

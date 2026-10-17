@@ -33,6 +33,11 @@ public sealed class NewItemWatcher : IHostedService, IDisposable
         _logger = logger;
     }
 
+    /// <summary>
+    /// Gets or sets how often to check whether a library scan is still running.
+    /// </summary>
+    internal TimeSpan ScanPollInterval { get; set; } = TimeSpan.FromSeconds(10);
+
     /// <inheritdoc />
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -71,6 +76,13 @@ public sealed class NewItemWatcher : IHostedService, IDisposable
 
         try
         {
+            // A new series' seasons and episodes are refreshed by the scan after this event;
+            // wait so our replace-all refresh doesn't race them.
+            while (_libraryManager.IsScanRunning)
+            {
+                await Task.Delay(ScanPollInterval, _stopping.Token).ConfigureAwait(false);
+            }
+
             var result = await _service.ApplyAsync(e.Item, _stopping.Token).ConfigureAwait(false);
             _logger.LogDebug("New item \"{Name}\": {Result}", e.Item.Name, result);
         }

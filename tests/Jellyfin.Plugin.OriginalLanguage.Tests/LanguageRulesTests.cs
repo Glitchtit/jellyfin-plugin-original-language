@@ -11,6 +11,8 @@ public class LanguageRulesTests
     [InlineData("SV")]
     [InlineData("swe")]
     [InlineData(" sv ")]
+    [InlineData("Swedish")]
+    [InlineData("svenska")]
     public void Swedish_MapsToSwedishSweden(string original)
     {
         Assert.Equal(new LanguageTarget("sv", "SE"), LanguageRules.GetTarget(original, AllOn));
@@ -20,6 +22,8 @@ public class LanguageRulesTests
     [InlineData("fi")]
     [InlineData("FI")]
     [InlineData("fin")]
+    [InlineData("Finnish")]
+    [InlineData("suomi")]
     public void Finnish_MapsToFinnishFinland(string original)
     {
         Assert.Equal(new LanguageTarget("fi", "FI"), LanguageRules.GetTarget(original, AllOn));
