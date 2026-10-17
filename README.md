@@ -28,11 +28,33 @@ There's no .NET SDK on the host. Everything runs in `mcr.microsoft.com/dotnet/sd
 ```sh
 ./build.sh test      # unit tests
 ./build.sh package   # dist/Original Language Metadata_1.0.0.0/ + zip
+./build.sh release   # package + add the version to manifest.json
 ```
+
+To publish a version: bump the version in `build.sh`, the `.csproj` and `meta.json`, then run
+`./build.sh release`. Commit `manifest.json`, and attach `dist/jellyfin-plugin-original-language_<version>.zip`
+to a GitHub release tagged `v<version>`.
 
 Targets Jellyfin 12.2 (`net10.0`, Jellyfin.Controller 12.2.0).
 
 ## Install
 
-Copy `dist/Original Language Metadata_1.0.0.0/` into your Jellyfin `plugins/` directory
-(`/config/plugins` in the official Docker image) and restart Jellyfin.
+### From the plugin repository (recommended)
+
+1. In Jellyfin, open **Dashboard → Plugins → Manage Repositories** and click **+**.
+2. *Repository Name*: `Original Language Metadata`. *Repository URL*:
+   ```
+   https://raw.githubusercontent.com/Glitchtit/jellyfin-plugin-original-language/main/manifest.json
+   ```
+3. Back on **Plugins**, find **Original Language Metadata** (category *Metadata*) and click **Install**.
+4. Restart Jellyfin.
+
+New versions then show up as updates in the dashboard.
+
+### Manually
+
+Download the zip from [Releases](https://github.com/Glitchtit/jellyfin-plugin-original-language/releases)
+(or build it), extract it into a folder `Original Language Metadata_<version>` inside Jellyfin's
+`plugins/` directory (`/config/plugins` in the official Docker image), and restart Jellyfin.
+
+Requires Jellyfin 12.2 or newer.
