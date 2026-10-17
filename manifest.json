@@ -5,10 +5,10 @@
       {
         "version": "1.0.0.0",
         "changelog": "Initial release.",
-        "targetAbi": "12.2.0.0",
+        "targetAbi": "12.2.0",
         "sourceUrl": "https://github.com/Glitchtit/jellyfin-plugin-original-language/releases/download/v1.0.0.0/jellyfin-plugin-original-language_1.0.0.0.zip",
-        "checksum": "7ba79726bd9c3a7854cc95d62d3e5b12",
-        "timestamp": "2026-10-17T16:32:19Z"
+        "checksum": "0edbf246e5ce3223eec89c3f83b95502",
+        "timestamp": "2026-10-17T16:35:33Z"
       }
     ],
     "name": "Original Language Metadata",

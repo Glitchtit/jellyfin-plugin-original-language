@@ -6,7 +6,7 @@
   "name": "Original Language Metadata",
   "overview": "Swedish/Finnish-original titles get Swedish/Finnish metadata.",
   "owner": "Glitchtit",
-  "targetAbi": "12.2.0.0",
+  "targetAbi": "12.2.0",
   "timestamp": "2026-10-17T00:00:00.0000000Z",
   "version": "1.0.0.0",
   "status": "Active",
