@@ -62,13 +62,23 @@ instead. Everything else stays English.
 - No .NET SDK on the dev workstation; build with the
   `mcr.microsoft.com/dotnet/sdk:10.0` Docker image (don't install the SDK
   system-wide).
-- **Original language is probably not stored by Jellyfin.** BaseItem has
-  `OriginalTitle` but no original-language field that I know of. Expect the
-  plugin to look it up from TMDB by the item's `Tmdb` provider ID. Prefer
-  reusing Jellyfin's bundled TMDb client/API key if it's reachable from a
-  plugin; otherwise call the TMDB API directly with the same API key Jellyfin
-  uses, or a key set in plugin config (builder's call, but avoid requiring the
-  owner to register a key if at all possible). Cache lookups per run.
+- **Original language (verified in v12.2 source + a real library DB):** Jellyfin 12
+  has `BaseItem.OriginalLanguage` (two-letter, filled by the TMDb/OMDb
+  providers). It is mostly empty for items
+  scanned before 12.x. So: use `item.OriginalLanguage` when set, otherwise
+  look it up from TMDB (`/3/movie/{id}` or `/3/tv/{id}`, field
+  `original_language`) by the item's `Tmdb` provider ID, using the same API
+  key Jellyfin's built-in TMDb plugin uses (its configured `TmdbApiKey`, else
+  `TmdbUtils.ApiKey`), reached by reflection. No key for the owner to
+  register. Items with neither are skipped.
+- Per-item `PreferredMetadataLanguage`/`CountryCode` on a series is
+  inherited by its seasons/episodes (`GetPreferredMetadataLanguage` walks
+  parents), and a queued refresh of a Folder recurses into its children.
+- "Newly added" = an item seen via `ILibraryManager.ItemAdded`, acted on at
+  its first `ItemUpdated` carrying `MetadataDownload` (by then provider IDs
+  and OriginalLanguage exist). Pending set is in memory; anything missed
+  across a restart is covered by the Apply task. Existing items being
+  refreshed are never touched automatically.
 
 ## Decided (by the owner)
 
@@ -87,7 +97,8 @@ instead. Everything else stays English.
   later normal refreshes keep the language.
 - Finland-Swedish productions (original language `sv`, country Finland) get
   `sv` / `SE`. The country only affects certification/release-date selection.
-- Items without a TMDB ID are skipped.
+- Items with no known original language (no `OriginalLanguage` and no TMDB
+  ID) are skipped.
 - Project name: `jellyfin-plugin-original-language`, plugin display name
   "Original Language Metadata". Repo at
   `~/GIT/jellyfin-plugin-original-language`.
