@@ -31,6 +31,7 @@ case "${1:-}" in
         mkdir -p "$out"
         cp dist/publish/Jellyfin.Plugin.OriginalLanguage.dll "$out/"
         cp meta.json "$out/"
+        cp assets/logo.png "$out/"
         (cd dist && zip -qr "jellyfin-plugin-original-language_${VERSION}.zip" "${NAME}_${VERSION}")
         rm -rf dist/publish
         echo "Packaged: $out"

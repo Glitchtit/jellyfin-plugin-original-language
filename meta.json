@@ -11,6 +11,6 @@
   "version": "1.0.0.0",
   "status": "Active",
   "autoUpdate": false,
-  "imagePath": "",
+  "imagePath": "/config/plugins/Original Language Metadata_1.0.0.0/logo.png",
   "assemblies": ["Jellyfin.Plugin.OriginalLanguage.dll"]
 }

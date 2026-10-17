@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 960 540">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b1640"/>
+      <stop offset="0.55" stop-color="#1d1f4a"/>
+      <stop offset="1" stop-color="#0b3550"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.45">
+      <stop offset="0" stop-color="#aa5cc3" stop-opacity="0.45"/>
+      <stop offset="0.6" stop-color="#00a4dc" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#00a4dc" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#aa5cc3"/>
+      <stop offset="1" stop-color="#00a4dc"/>
+    </linearGradient>
+
+    <!-- Speech bubbles: Swedish one tails bottom-left, Finnish one tails bottom-right -->
+    <path id="bubbleSE" d="M318,100 H522 A28,28 0 0 1 550,128 V232 A28,28 0 0 1 522,260 H380 L322,302 L334,260 H318 A28,28 0 0 1 290,232 V128 A28,28 0 0 1 318,100 Z"/>
+    <path id="bubbleFI" d="M438,170 H642 A28,28 0 0 1 670,198 V302 A28,28 0 0 1 642,330 H628 L640,372 L582,330 H438 A28,28 0 0 1 410,302 V198 A28,28 0 0 1 438,170 Z"/>
+    <clipPath id="clipSE"><use href="#bubbleSE"/></clipPath>
+    <clipPath id="clipFI"><use href="#bubbleFI"/></clipPath>
+
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="540" fill="url(#bg)"/>
+  <rect width="960" height="540" fill="url(#glow)"/>
+
+  <!-- Swedish flag bubble (16:10, cross at 5/16 and 4/10) -->
+  <g filter="url(#shadow)">
+    <g clip-path="url(#clipSE)">
+      <rect x="290" y="100" width="260" height="210" fill="#006aa7"/>
+      <rect x="371.25" y="100" width="32.5" height="210" fill="#fecc00"/>
+      <rect x="290" y="164" width="260" height="32" fill="#fecc00"/>
+    </g>
+  </g>
+
+  <!-- Finnish flag bubble (18:11, cross at 5/18 and 4/11) -->
+  <g filter="url(#shadow)">
+    <g clip-path="url(#clipFI)">
+      <rect x="410" y="170" width="260" height="210" fill="#ffffff"/>
+      <rect x="482.2" y="170" width="43.3" height="210" fill="#002f6c"/>
+      <rect x="410" y="228.2" width="260" height="43.6" fill="#002f6c"/>
+    </g>
+    <use href="#bubbleFI" fill="none" stroke="#1d1f4a" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+
+  <text x="480" y="448" text-anchor="middle" font-family="Noto Sans" font-weight="700" font-size="54" fill="#ffffff" letter-spacing="0.5">Original Language Metadata</text>
+  <rect x="380" y="474" width="200" height="5" rx="2.5" fill="url(#rule)"/>
+</svg>
